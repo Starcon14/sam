@@ -1,0 +1,9 @@
+Change Request Log
+Jake Beets
+April 4, 2025
+
+-Create library of functions to validate user input for jogging, start position, etc.
+
+-Add position updater to jog/move functions
+
+-Add "On Closing" command
