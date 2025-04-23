@@ -5,16 +5,6 @@ Created on Wed Apr  2 15:58:44 2025
 @author: kcube2
 """
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 19 12:15:41 2025
-
-@author: main_user
-"""
-
-
-
 
 
 import customtkinter as ctk
@@ -37,6 +27,7 @@ from Thorlabs.MotionControl.DeviceManagerCLI import *
 from Thorlabs.MotionControl.GenericMotorCLI import *
 from Thorlabs.MotionControl.KCube.StepperMotorCLI import *
 from System import Decimal  # necessary for real world units
+import System
 
 
 
@@ -45,12 +36,13 @@ class kcube:
 
         
         self.device = None
-        self.ishomed = None
+        self.ishomed = False
         self.isconnected = False
         self.serial_no = "26005869"
+        self.position = 0
         
-    
-    
+        
+        
     # -------- Connect Stage -------- #
     
     
@@ -83,8 +75,10 @@ class kcube:
             # Get/Set Velocity Params
             device_vel_params = device.GetVelocityParams()
             
+            
             self.device = device
             self.isconnected = True
+            self.pos_update_unthreaded()
             
             print('KCube Initialized')
             
@@ -105,7 +99,7 @@ class kcube:
     def disconnect_stage_unthreaded(self):
         
         while self.isconnected == False:
-            time.sleep(0.25)
+            time.sleep(0.2)
             tick = 1
             if tick > 100:
                 raise Exception("disconnect_stage_unthreaded failed due to timeout. Make sure KCube has bee connected properly.")
@@ -116,7 +110,8 @@ class kcube:
             device.StopPolling()
             time.sleep(0.25)
             device.Disconnect()
-            #SimulationManager.Instance.UninitializeSimulations()
+            
+            self.isconnected = False
             
             self.device = device
             print("KCube Disconnected")
@@ -135,7 +130,7 @@ class kcube:
     # -------- Home Stage -------- #
         
     
-    def home_stage(self):
+    def home_stage_unthreaded(self):
         
         while self.isconnected == False:
             time.sleep(0.25)
@@ -143,15 +138,22 @@ class kcube:
         device = self.device
         try:
             
+            self.pos_update_unthreaded()
+            
             print("Homing KCube...")
             device.Home(60000)  # 60 seconds
             print("KCube Homed")
         
             self.ishomed = True
             self.device = device
-        
+            self.pos_update_unthreaded()
+            
         except Exception as e:
             print(e)
+            
+    def home_stage(self):
+        
+        threading.Thread(target=self.home_stage_unthreaded, daemon=True).start()
             
             
     # -------- Home Stage -------- #
@@ -167,11 +169,13 @@ class kcube:
             num = jog_entry.get()
             #num = jog_entry
             num = float(num)
-        
+            
             relative_step = Decimal(num)              # converts step size to Decimal
             device.SetMoveRelativeDistance(relative_step)   # sets relative step length
             device.MoveRelative(60000)
-        
+            
+            self.pos_update_unthreaded()
+            
         except Exception as e:
             print(e)
         
@@ -200,6 +204,8 @@ class kcube:
             relative_step = Decimal(num)              # converts step size to Decimal
             device.SetMoveRelativeDistance(relative_step)   # sets relative step length
             device.MoveRelative(60000)
+            
+            self.pos_update_unthreaded()
         
         except Exception as e:
             print(e)
@@ -209,28 +215,63 @@ class kcube:
     
     def jog_stage_neg(self, jog_entry):    
         
-        threading.Thread(target=self.jog_stage_neg_unthreaded, daemon=True).start()
-    
+        threading.Thread(target=self.jog_stage_neg_unthreaded, args=(jog_entry,), daemon=True).start()
     
     # -------- Jog Stage Negative -------- #
     
     
-    # -------- Position Updater -------- #
+    # -------- Move Stage Positive -------- #
     
-    
-    def pos_update_unthreaded(self, progress_bar):
+    def move_stage_unthreaded(self, move_entry):
         
         device = self.device
+        
         try:
-            pos = float(device)
-            progress_bar.set(pos)
+            num = move_entry.get()
+            num = float(num)
+            
+            absolute_step = Decimal(num)              # converts step size to Decimal
+            device.SetMoveAbsolutePosition(absolute_step)   # sets relative step length
+            device.MoveAbsolute(60000)
+            
+            self.pos_update_unthreaded()
             
         except Exception as e:
             print(e)
+            
+        self.device = device
         
-    def pos_update(self, progress_bar):
+        
+    def move_stage(self, move_entry):
+            
+        threading.Thread(target=self.move_stage_unthreaded, args=(move_entry,), daemon=True).start()
+    
+    # -------- Move Stage Positive -------- #
+    
+    
+    # -------- Position Updater -------- #
+    
+    
+    def pos_update_unthreaded(self):
+        
+        device = self.device
+
+        try:
+            
+            pos = device.Position
+            pos = str(pos)
+            pos = float(pos)
+            pos = f"{pos:.6f}"
+            
+            self.position = pos
+
+        except Exception as e:
+            print(e)
+        
+    def pos_update(self):
         
         threading.Thread(target=self.pos_update_unthreaded, daemon=True).start()
         
     # -------- Position Updater -------- #
+
         

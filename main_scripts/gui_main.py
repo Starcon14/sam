@@ -25,11 +25,19 @@ Requirements:
 
 import customtkinter as ctk
 import tkinter as tk
+import ttkbootstrap as ttkb
 import kcube_functions
 
 stage1 = kcube_functions.kcube()
 
 
+
+
+def position_updater():
+    s1_pos.set(str(stage1.position))
+    s1_connected.set(str(stage1.isconnected))
+    s1_homed.set(str(stage1.ishomed))
+    window.after(250, position_updater)
 
 
 def convert():
@@ -61,6 +69,12 @@ status_font = ctk.CTkFont(family="Courier New",
                           size=24)
 # ------ Font Definitions
 
+# ------ Variables
+s1_pos = ctk.StringVar()
+s1_connected = ctk.StringVar()
+s1_homed = ctk.StringVar()
+
+# ------ Variables
 
 #------------------------------
 frame_col0 = ctk.CTkFrame(master = window,
@@ -124,8 +138,11 @@ percent_label.place(x = 65,
 # ------- Current Position Label
 c_pos = ctk.CTkLabel(master = frame1,
                      text = "00.023423443",
+                     width = 300,
                      font = pos_font1,
-                     text_color = f1_color1)
+                     text_color = f1_color1,
+                     textvariable = s1_pos,
+                     anchor = "e")
 c_pos.place(x = 20,
             y = 75)
 c_pos1 = ctk.CTkLabel(master = frame1,
@@ -265,9 +282,7 @@ move_label.place(x = 20,
 # ------- Move To Label
 
 # ------- Move To Entry
-move_var = ctk.IntVar()
 move_entry = ctk.CTkEntry(master = frame2,
-                         textvariable = move_var,
                          text_color = f2_color1,
                          font = percent_font)
 move_entry.place(x = 80,
@@ -283,7 +298,7 @@ move_label1.place(x = 230,
 # ------- Move To Button 
 move_pos = ctk.CTkButton(master = frame2, 
                     text = 'Move', 
-                    command = convert,
+                    command = lambda: stage1.move_stage(move_entry),
                     font = percent_font,
                     text_color = f2_color1,
                     fg_color = "gray17",
@@ -579,7 +594,8 @@ stage_connection_status = ctk.CTkLabel(master = frame5,
                          text = "Standby",
                          #textvariable = stage_connect_string,
                          font = status_font,
-                         text_color = f5_color1)
+                         text_color = f5_color1,
+                         textvariable = s1_connected)
 stage_connection_status.place(x = 20,
                               y = 90)
 # ------- Stage Connection Status
@@ -596,7 +612,8 @@ stage_homed_status = ctk.CTkLabel(master = frame5,
                          text = "Standby",
                          #textvariable = stage_position_string,
                          font = status_font,
-                         text_color = f5_color1)
+                         text_color = f5_color1,
+                         textvariable = s1_homed)
 stage_homed_status.place(x = 20,
                          y = 150)
 # ------- Stage Homed Status
@@ -680,5 +697,6 @@ output_label.grid(row = 4, column = 1, pady = 10)
 # ------ Output Field 1
 
 # ------ Run Main Loop
+position_updater()
 window.mainloop()
 # ------ Run Main Loop
