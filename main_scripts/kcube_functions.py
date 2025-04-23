@@ -39,7 +39,10 @@ class kcube:
         self.ishomed = False
         self.isconnected = False
         self.serial_no = "26005869"
-        self.position = 0
+        self.position = 0.000000
+        self.delta = 0
+        self.start = 0
+        self.end = 0
         
         
         

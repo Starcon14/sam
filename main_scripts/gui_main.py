@@ -39,6 +39,12 @@ def position_updater():
     s1_homed.set(str(stage1.ishomed))
     window.after(250, position_updater)
 
+def read_input():
+    
+    stage1.delta = float(stepsize_entry.get())
+    stage1.start = float(start_entry.get())
+    stage1.end = float(end_entry.get())
+
 
 def on_close():
     if tk.messagebox.askokcancel("Quit", "Do you want to quit?"):
@@ -351,9 +357,7 @@ stepsize_label.place(x = 20,
 # ------- Stepsize Label
 
 # ------- Stepsize Entry
-stepsize_var = ctk.IntVar()
 stepsize_entry = ctk.CTkEntry(master = frame3,
-                         textvariable = stepsize_var,
                          text_color = f3_color1,
                          font = percent_font)
 stepsize_entry.place(x = 140,
@@ -366,38 +370,34 @@ stepsize_label1.place(x = 290,
                       y = 20)
 # ------- Stepsize Entry
 
-# ------- Steps Label
-steps_label = ctk.CTkLabel(master = frame3,
-                         text = "Steps:",
-                         font = percent_font,
-                         text_color = f3_color1)
-steps_label.place(x = 20,
-                  y = 60)
-# ------- Steps Label
+# # ------- Steps Label
+# steps_label = ctk.CTkLabel(master = frame3,
+#                          text = "Steps:",
+#                          font = percent_font,
+#                          text_color = f3_color1)
+# steps_label.place(x = 20,
+#                   y = 60)
+# # ------- Steps Label
 
-# ------- Steps Entry
-steps_var = ctk.IntVar()
-steps_entry = ctk.CTkEntry(master = frame3,
-                         textvariable = steps_var,
-                         text_color = f3_color1,
-                         font = percent_font)
-steps_entry.place(x = 140,
-                  y = 60) 
-# ------- Steps Entry
+# # ------- Steps Entry
+# steps_entry = ctk.CTkEntry(master = frame3,
+#                          text_color = f3_color1,
+#                          font = percent_font)
+# steps_entry.place(x = 140,
+#                   y = 60) 
+# # ------- Steps Entry
 
 # ------- Start Label
-stepsize_label = ctk.CTkLabel(master = frame3,
+start_label = ctk.CTkLabel(master = frame3,
                          text = "Start:",
                          font = percent_font,
                          text_color = f3_color1)
-stepsize_label.place(x = 20,
-                     y = 100)
+start_label.place(x = 20,
+                  y = 100)
 # ------- Start Label
 
 # ------- Start Entry
-start_var = ctk.IntVar()
 start_entry = ctk.CTkEntry(master = frame3,
-                         textvariable = start_var,
                          text_color = f3_color1,
                          font = percent_font)
 start_entry.place(x = 140,
@@ -411,18 +411,16 @@ start_label1.place(x = 290,
 # ------- Start Entry
 
 # ------- End Label
-stepsize_label = ctk.CTkLabel(master = frame3,
+end_label = ctk.CTkLabel(master = frame3,
                          text = "End:",
                          font = percent_font,
                          text_color = f3_color1)
-stepsize_label.place(x = 20,
-                     y = 140)
+end_label.place(x = 20,
+                y = 140)
 # ------- End Label
 
 # ------- End Entry
-end_var = ctk.IntVar()
 end_entry = ctk.CTkEntry(master = frame3,
-                         textvariable = end_var,
                          text_color = f3_color1,
                          font = percent_font)
 end_entry.place(x = 140,
@@ -438,7 +436,7 @@ end_label1.place(x = 290,
 # ------- Input Parameters Button 
 input_paramters = ctk.CTkButton(master = frame3, 
                     text = 'Input', 
-                    command = convert,
+                    command = lambda: read_input(),
                     font = percent_font,
                     text_color = f3_color1,
                     fg_color = "gray17",
