@@ -40,6 +40,12 @@ def position_updater():
     window.after(250, position_updater)
 
 
+def on_close():
+    if tk.messagebox.askokcancel("Quit", "Do you want to quit?"):
+        stage1.disconnect_stage()
+        window.destroy()
+        print("Window Closed")
+
 def convert():
     
     but_input = entry_int.get()
@@ -697,6 +703,7 @@ output_label.grid(row = 4, column = 1, pady = 10)
 # ------ Output Field 1
 
 # ------ Run Main Loop
+window.protocol("WM_DELETE_WINDOW", on_close)
 position_updater()
 window.mainloop()
 # ------ Run Main Loop

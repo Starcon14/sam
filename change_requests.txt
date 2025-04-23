@@ -2,7 +2,32 @@ Change Request Log
 Jake Beets
 April 4, 2025
 
--Create library of functions to validate user input for jogging, start position, etc.
+
+-Rename stage to axis
+	- This will be used to avoid confusion when working with mulitple stages and stages with multiple axes
+
+-Create functions to validate user input for jogging, start position, etc.
+
+-Add threading protections to prevent over accessing USB, .NET, or other communications bands
+
+-Add tabs to broaden usability
+
+-Revise Panels
+	-Acquisition timer/remove stage position
+	-Connect & disconnect all
+	-Redo Status and shift axis specific to tab
+	-Move jog panel to specific tab
+
+-Add functionality for 2 axis stage
+
+-Add functionality for spectrometer
+	-Connecting
+	-Temperature monitor
+	-Collect, name, and store spectra
+
+
+
+Done
 
 -Add position updater to jog/move functions
 
