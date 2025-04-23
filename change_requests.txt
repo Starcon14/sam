@@ -10,6 +10,10 @@ April 4, 2025
 
 -Add threading protections to prevent over accessing USB, .NET, or other communications bands
 
+-Add console panel for user feedback
+
+-Add print statements for each action to provide user feedback
+
 -Add tabs to broaden usability
 
 -Revise Panels
