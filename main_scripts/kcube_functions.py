@@ -43,6 +43,7 @@ class kcube:
         self.delta = 0
         self.start = 0
         self.end = 0
+        self.prg_str = None
         
         
         
@@ -168,10 +169,14 @@ class kcube:
     def jog_stage_pos_unthreaded(self, jog_entry):
         
         device = self.device
-        try:
+        
+        if type(jog_entry) == float:
+            num = jog_entry
+        else:
             num = jog_entry.get()
-            #num = jog_entry
             num = float(num)
+        
+        try:
             
             relative_step = Decimal(num)              # converts step size to Decimal
             device.SetMoveRelativeDistance(relative_step)   # sets relative step length
@@ -200,10 +205,15 @@ class kcube:
     def jog_stage_neg_unthreaded(self, jog_entry):
         
         device = self.device
-        try:
+        
+        if type(jog_entry) == float:
+            num = jog_entry
+        else:
             num = "-" + jog_entry.get()
             num = float(num)
         
+        try:
+            
             relative_step = Decimal(num)              # converts step size to Decimal
             device.SetMoveRelativeDistance(relative_step)   # sets relative step length
             device.MoveRelative(60000)
@@ -229,9 +239,13 @@ class kcube:
         
         device = self.device
         
-        try:
+        if type(move_entry) == float:
+            num = move_entry
+        else:
             num = move_entry.get()
             num = float(num)
+        
+        try:
             
             absolute_step = Decimal(num)              # converts step size to Decimal
             device.SetMoveAbsolutePosition(absolute_step)   # sets relative step length

@@ -25,8 +25,9 @@ Requirements:
 
 import customtkinter as ctk
 import tkinter as tk
-import ttkbootstrap as ttkb
+
 import kcube_functions
+import acquisition as aq
 
 stage1 = kcube_functions.kcube()
 
@@ -47,7 +48,7 @@ def read_input():
 
 
 def on_close():
-    if tk.messagebox.askokcancel("Quit", "Do you want to quit?"):
+    if tk.messagebox.askokcancel("Quit", "Shut down hardware and exit?"):
         stage1.disconnect_stage()
         window.destroy()
         print("Window Closed")
@@ -86,6 +87,8 @@ s1_pos = ctk.StringVar()
 s1_connected = ctk.StringVar()
 s1_homed = ctk.StringVar()
 
+progress_str = ctk.StringVar()
+progress_str.set('0.0%')
 # ------ Variables
 
 #------------------------------
@@ -130,17 +133,18 @@ progress_bar = ctk.CTkProgressBar(master = frame1,
                                  width = 400,
                                  corner_radius = 10,
                                  progress_color = f1_color2)
-progress_bar.set(0.9)
+progress_bar.set(0)
 progress_bar.pack(pady = 20,
                   padx = 20)
 # ------- Progress Bar
 
 # ------- Pecentage Label
 percent_label = ctk.CTkLabel(master = frame1,
-                             text = "100.0%",
+                             text = "0.0%",
                              font = percent_font,
                              fg_color = "transparent",
-                             text_color = "gray74")
+                             text_color = "gray74",
+                             textvariable = progress_str)
 percent_string = ctk.StringVar()
 percent_label.place(x = 65,
                     y = 40,
@@ -168,7 +172,7 @@ c_pos1.place(x = 330,
 # ------- Start Button
 aquire_button = ctk.CTkButton(master = frame1, 
                     text = ' Start \nAquisition', 
-                    command = convert,
+                    command = lambda: aq.acquire(stage1, progress_bar, progress_str),
                     font = aquire_font,
                     text_color = f1_color1,
                     fg_color = "gray17",
