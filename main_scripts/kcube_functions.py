@@ -44,6 +44,7 @@ class kcube:
         self.start = 0
         self.end = 0
         self.prg_str = None
+        self.name = "Unamed"
         
         
         
@@ -91,8 +92,9 @@ class kcube:
         
     def connect_stage(self):
         
-        threading.Thread(target=self.connect_stage_unthreaded, daemon=True).start()
-    
+        thread1 = threading.Thread(target=self.connect_stage_unthreaded, daemon=True)
+        thread1.start()
+        return thread1
     
     # -------- Connect Stage -------- #
     
@@ -102,12 +104,12 @@ class kcube:
     
     def disconnect_stage_unthreaded(self):
         
-        while self.isconnected == False:
-            time.sleep(0.2)
-            tick = 1
-            if tick > 100:
-                raise Exception("disconnect_stage_unthreaded failed due to timeout. Make sure KCube has bee connected properly.")
         
+        if self.isconnected == False:
+            
+            e_str = f"KCube object SN:{self.serial_no} and name {self.name} was not connected before trying to disconnect."
+
+            raise Exception(e_str)
         
         device = self.device  
         try:        
@@ -125,8 +127,9 @@ class kcube:
     
     def disconnect_stage(self):
         
-        threading.Thread(target=self.disconnect_stage_unthreaded, daemon=True).start()
-        
+        thread1 = threading.Thread(target=self.disconnect_stage_unthreaded, daemon=True)
+        thread1.start()
+        return thread1
         
     # -------- Disconnect Stage -------- #
     
@@ -157,7 +160,9 @@ class kcube:
             
     def home_stage(self):
         
-        threading.Thread(target=self.home_stage_unthreaded, daemon=True).start()
+        thread1 = threading.Thread(target=self.home_stage_unthreaded, daemon=True)
+        thread1.start()
+        return thread1
             
             
     # -------- Home Stage -------- #
@@ -192,8 +197,10 @@ class kcube:
     
     def jog_stage_pos(self, jog_entry):    
         
-        threading.Thread(target=self.jog_stage_pos_unthreaded, args=(jog_entry,), daemon=True).start()
-    
+        thread1 = threading.Thread(target=self.jog_stage_pos_unthreaded, 
+                                   args=(jog_entry,), daemon=True)
+        thread1.start()
+        return thread1
     
     
     # -------- Jog Stage Positive -------- #
@@ -207,7 +214,7 @@ class kcube:
         device = self.device
         
         if type(jog_entry) == float:
-            num = jog_entry
+            num = -jog_entry
         else:
             num = "-" + jog_entry.get()
             num = float(num)
@@ -228,8 +235,11 @@ class kcube:
     
     def jog_stage_neg(self, jog_entry):    
         
-        threading.Thread(target=self.jog_stage_neg_unthreaded, args=(jog_entry,), daemon=True).start()
-    
+        thread1 = threading.Thread(target=self.jog_stage_neg_unthreaded, 
+                                   args=(jog_entry,), daemon=True)
+        thread1.start()
+        return thread1
+        
     # -------- Jog Stage Negative -------- #
     
     
@@ -261,8 +271,11 @@ class kcube:
         
     def move_stage(self, move_entry):
             
-        threading.Thread(target=self.move_stage_unthreaded, args=(move_entry,), daemon=True).start()
-    
+        thread1 = threading.Thread(target=self.move_stage_unthreaded, 
+                                   args=(move_entry,), daemon=True)
+        thread1.start()
+        return thread1
+        
     # -------- Move Stage Positive -------- #
     
     
@@ -287,8 +300,11 @@ class kcube:
         
     def pos_update(self):
         
-        threading.Thread(target=self.pos_update_unthreaded, daemon=True).start()
-        
+        thread1 = threading.Thread(target=self.pos_update_unthreaded, 
+                                   daemon=True)
+        thread1.start()
+        return thread1
+    
     # -------- Position Updater -------- #
 
         

@@ -11,7 +11,7 @@ import threading
 import time
 
 
-def acquire_unthreaded(stage1, progress_bar, progress_str):
+def acquire_unthreaded(stage1, progress_bar, progress_str, stop):
     
     
     try:
@@ -22,8 +22,9 @@ def acquire_unthreaded(stage1, progress_bar, progress_str):
     
         # initialize loop control variables
         stepcount = 0
-        steps = int( abs(pf - p0) / delta )
-    
+        steps = int( (pf - p0) / delta )
+        
+        
         # set up stage 1
         stage1.move_stage_unthreaded(p0)
         stage1.pos_update_unthreaded
@@ -31,21 +32,30 @@ def acquire_unthreaded(stage1, progress_bar, progress_str):
         # progress bar updater
         progress = 0
 
-        while steps > stepcount:
+        while abs(steps) > stepcount:
+            
+            if stop.is_set == True:
+                
+                e_str = "Acquisition canceled"
+                
+                raise Exception(e_str)
             
             # spectrometer acquire spectra
             
             stepcount += 1
             
-            stage1.jog_stage_pos_unthreaded(delta)
+            if steps > 0:
+                stage1.jog_stage_pos_unthreaded(delta)
+                
+            elif steps < 0:
+                stage1.jog_stage_neg_unthreaded(delta)
+            
             stage1.pos_update_unthreaded
             
-            progress = stepcount / steps
+            progress = stepcount / abs(steps)
             progress_bar.set(progress)
             progress = progress * 100
             p_str = f"{progress:06.2f}" + "%"
-            print(progress)
-            print(p_str)
             progress_str.set(p_str)
             
             time.sleep(2)
@@ -55,5 +65,18 @@ def acquire_unthreaded(stage1, progress_bar, progress_str):
  
 
 def acquire(stage1, progress_bar, progress_str):
-    threading.Thread(target=acquire_unthreaded, args=(stage1, progress_bar, progress_str), daemon=True).start()
-      
+    thread1 = threading.Thread(target=acquire_unthreaded, 
+                     args=(stage1, progress_bar, progress_str), daemon=True)
+    thread1.start()
+    return thread1
+
+
+def stop_aquire_unthreaded():
+    stop = threading.Event()
+    
+
+def stop_acquire():
+    thread1 = threading.Thread(target=stop_aquire_unthreaded(), deamon=True)
+    thread1.start()
+    return thread1()
+    

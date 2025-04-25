@@ -33,6 +33,10 @@ stage1 = kcube_functions.kcube()
 
 
 
+# -------------------------------------------
+# ------- GUI Functions
+# -----------------------
+
 
 def position_updater():
     s1_pos.set(str(stage1.position))
@@ -49,7 +53,8 @@ def read_input():
 
 def on_close():
     if tk.messagebox.askokcancel("Quit", "Shut down hardware and exit?"):
-        stage1.disconnect_stage()
+        thread1 = stage1.disconnect_stage()
+        thread1.join()
         window.destroy()
         print("Window Closed")
 
@@ -61,12 +66,15 @@ def convert():
     output_string.set(but_output)
     
 
+# -----------------------
+# ------- GUI Functions
+# -------------------------------------------
 
 
 # ----- Initial Window
 window = ctk.CTk()
 window.title("KCube Automate Panel")
-window.geometry("800x630")
+window.geometry("1100x630")
 # ----- Initial Window
 
 # ------ Font Definitions
@@ -91,22 +99,68 @@ progress_str = ctk.StringVar()
 progress_str.set('0.0%')
 # ------ Variables
 
+
+#-----------Grid Frames------------------------------
+
+
 #------------------------------
 frame_col0 = ctk.CTkFrame(master = window,
-                      width = 450,
-                      height = 700,
-                      fg_color = "gray15")
-frame_col0.grid(row = 0, column = 1)
-#------------------------------
-
-
-#------------------------------
-frame_col1 = ctk.CTkFrame(master = window,
                       width = 300,
                       height = 700,
                       fg_color = "gray15")
-frame_col1.grid(row = 0, column = 2)
+frame_col0.grid(row = 0, column = 0)
 #------------------------------
+
+#------------------------------
+frame_col1 = ctk.CTkFrame(master = window,
+                      width = 450,
+                      height = 700,
+                      fg_color = "gray15")
+frame_col1.grid(row = 0, column = 1)
+#------------------------------
+
+
+#------------------------------
+frame_col2 = ctk.CTkFrame(master = window,
+                      width = 300,
+                      height = 700,
+                      fg_color = "gray15")
+frame_col2.grid(row = 0, column = 2)
+#------------------------------
+
+#-----------Grid Frames------------------------------
+
+
+
+# -------------------------------------------
+# ------- Terminal Emulator & User Feedback (frame0)
+# -----------------------
+f0_color1 = "#03C03C"
+f0_color2 = "#289A4A"
+f0_color3 = "#26362B"
+frame0 = ctk.CTkFrame(master = frame_col0,
+                      width = 250,
+                      height = 350,
+                      border_width = 5,
+                      border_color = f0_color2)
+frame0.pack_propagate(False)
+frame0.pack(pady = 10, padx = 10)
+
+
+# ------- Terminal Window
+
+
+
+# ------- Terminal Window
+
+
+
+# -----------------------
+# ------- Terminal Emulator & User Feedback (frame0)
+# -------------------------------------------
+
+
+
 
 
 # -------------------------------------------
@@ -114,11 +168,10 @@ frame_col1.grid(row = 0, column = 2)
 # -----------------------
 
 
-
 f1_color1 = "#03C03C"
 f1_color2 = "#289A4A"
 f1_color3 = "#26362B"
-frame1 = ctk.CTkFrame(master = frame_col0,
+frame1 = ctk.CTkFrame(master = frame_col1,
                       width = 440,
                       height = 250,
                       border_width = 5,
@@ -186,7 +239,7 @@ aquire_button.place(x = 20,
 # ------- Stop Button
 stop_button = ctk.CTkButton(master = frame1, 
                     text = ' Stop \nAquisition', 
-                    command = convert,
+                    command = lambda: aq.stop_aquire_unthreaded(),
                     font = aquire_font,
                     text_color = "FireBrick3",
                     fg_color = "gray17",
@@ -226,7 +279,7 @@ stop_checkbox.place(x = 260,
 f2_color1 = "#00C7E6"
 f2_color2 = "#068599"
 f2_color3 = "#133D44"
-frame2 = ctk.CTkFrame(master = frame_col0,
+frame2 = ctk.CTkFrame(master = frame_col1,
                       width = 440,
                       height = 130,
                       border_width = 5,
@@ -343,7 +396,7 @@ move_pos.place(x = 270,
 f3_color1 = "#B587D4"
 f3_color2 = "#70438E"
 f3_color3 = "#331249"
-frame3 = ctk.CTkFrame(master = frame_col0,
+frame3 = ctk.CTkFrame(master = frame_col1,
                       width = 440,
                       height = 190,
                       border_width = 5,
@@ -471,7 +524,7 @@ input_paramters.place(x = 340,
 f4_color1 = "#A98E7E"
 f4_color2 = "#6E5749"
 f4_color3 = "#3D3129"
-frame4 = ctk.CTkFrame(master = frame_col1,
+frame4 = ctk.CTkFrame(master = frame_col2,
                       width = 340,
                       height = 210,
                       border_width = 5,
@@ -572,7 +625,7 @@ spec_disconnect.place(x = 180,
 f5_color1 = "#D6AC38"
 f5_color2 = "#9D7B20"
 f5_color3 = "#594612"
-frame5 = ctk.CTkFrame(master = frame_col1,
+frame5 = ctk.CTkFrame(master = frame_col2,
                       width = 340,
                       height = 380,
                       border_width = 5,
