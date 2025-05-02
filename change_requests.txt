@@ -29,6 +29,10 @@ April 4, 2025
 	-Temperature monitor
 	-Collect, name, and store spectra
 
+-Add error and function log to record what actions were taken and what errors occurred
+
+
+
 
 
 Done
