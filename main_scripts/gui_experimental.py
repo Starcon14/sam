@@ -7,8 +7,6 @@ Created on Fri Feb 28 2025
 
 Version: 0.1.2
 
-Changes: https://docs.google.com/document/d/1uxsw22l4aI11v3yd_o_6eYBWLN_Vuacpy6a7-J05IsA/edit?usp=sharing
-
 Description: 
 The main goal of this program is to provide a UI to automate the data collection for a CARS
 system. The program will be able interface with a Thorlabs stage and an Andor spectrometer. 
@@ -30,7 +28,7 @@ from tkinter import scrolledtext
 import kcube_functions
 import acquisition as aq
 
-stage1 = kcube_functions.kcube()
+axis1 = kcube_functions.kcube()
 
 
 
@@ -42,16 +40,16 @@ stage1 = kcube_functions.kcube()
 
 
 def position_updater():
-    s1_pos.set(str(stage1.position))
-    s1_connected.set(str(stage1.isconnected))
-    s1_homed.set(str(stage1.ishomed))
+    a1_position.set(str(axis1.position))
+    a1_connected.set(str(axis1.isconnected))
+    a1_homed.set(str(axis1.ishomed))
     window.after(250, position_updater)
 
 def read_input():
     
-     stage1.delta = float(stepsize_entry.get())
-     stage1.start = float(start_entry.get())
-     stage1.end = float(end_entry.get())
+     axis1.delta = float(stepsize_entry.get())
+     axis1.start = float(start_entry.get())
+     axis1.end = float(end_entry.get())
 
 
 def on_close():
@@ -101,9 +99,6 @@ status_font = ctk.CTkFont(family="Courier New",
 # ------ Font Definitions
 
 # ------ Variables
-s1_pos = ctk.StringVar()
-s1_connected = ctk.StringVar()
-s1_homed = ctk.StringVar()
 
 progress_str = ctk.StringVar()
 progress_str.set('0.0%')
@@ -192,7 +187,7 @@ c_pos.place(x = 20,
 # ------- Start Button
 aquire_button = ctk.CTkButton(master = frame0, 
                     text = 'Start', 
-                    command = lambda: aq.acquire(stage1, progress_bar, progress_str),
+                    command = lambda: aq.acquire(axis1, progress_bar, progress_str),
                     font = aquire_font,
                     text_color = f0_color1,
                     fg_color = "gray17",
@@ -314,111 +309,306 @@ tabs.add('Live View')
 f2_color1 = "#00C7E6"
 f2_color2 = "#068599"
 f2_color3 = "#133D44"
-frame2 = ctk.CTkFrame(master = tabs.tab('Axes'),
-                      width = 440,
-                      height = 130,
-                      border_width = 5,
-                      border_color = f2_color2)
-frame2.pack_propagate(False)
-frame2.pack(pady = 10)
+
 
 # ------- Jog Label
-jog_label = ctk.CTkLabel(master = frame2,
-                         text = "Jog:",
+jog_label = ctk.CTkLabel(master = tabs.tab('Axes'),
+                         text = "Jog(mm)",
                          font = percent_font,
                          text_color = f2_color1)
-jog_label.place(x = 20,
-                y = 20)
+jog_label.place(x = 10,
+                y = 5)
 # ------- Jog Label
 
 # ------- Jog Entry
-jog_entry = ctk.CTkEntry(master = frame2,
+jog_entry = ctk.CTkEntry(master = tabs.tab('Axes'),
                          text_color = f2_color1,
-                         font = percent_font)
-jog_entry.place(x = 80,
-                y = 20) 
-jog_label1 = ctk.CTkLabel(master = frame2,
-                     text = "mm",
-                     font = percent_font,
-                     text_color = f2_color1)
-jog_label1.place(x = 230,
-                 y = 20)
+                         font = percent_font,
+                         width = 172)
+jog_entry.place(x = 10,
+                y = 45) 
 
 # ------- Jog Entry
 
 # ------- Jog Button Positive
-jog_pos = ctk.CTkButton(master = frame2, 
+jog_pos = ctk.CTkButton(master = tabs.tab('Axes'), 
                     text = '+', 
-                    command = lambda: stage1.jog_stage_pos(jog_entry),
+                    command = lambda: axis1.jog_stage_pos(jog_entry),
                     font = percent_font,
                     text_color = f2_color1,
                     fg_color = "gray17",
                     border_color = f2_color2,
                     hover_color = f2_color3,
                     border_width = 2,
-                    width = 70)
-jog_pos.place(x = 270,
-              y = 20)
+                    width = 40)
+jog_pos.place(x = 100,
+              y = 5)
 # ------- Jog Button Positive
 
 # ------- Jog Button Negative
-jog_neg = ctk.CTkButton(master = frame2, 
+jog_neg = ctk.CTkButton(master = tabs.tab('Axes'), 
                     text = '-', 
-                    command = lambda: stage1.jog_stage_neg(jog_entry),
+                    command = lambda: axis1.jog_stage_neg(jog_entry),
                     font = percent_font,
                     text_color = f2_color1,
                     fg_color = "gray17",
                     border_color = f2_color2,
                     hover_color = f2_color3,
                     border_width = 2,
-                    width = 70)
-jog_neg.place(x = 350,
-              y = 20)
+                    width = 40)
+jog_neg.place(x = 140,
+              y = 5)
 # ------- Jog Button Negative
 
-# ------- Move To Label
-move_label = ctk.CTkLabel(master = frame2,
-                         text = "Move \nTo:",
-                         font = percent_font,
-                         text_color = f2_color1)
-move_label.place(x = 20,
-                 y = 60)
-# ------- Move To Label
-
-# ------- Move To Entry
-move_entry = ctk.CTkEntry(master = frame2,
-                         text_color = f2_color1,
-                         font = percent_font)
-move_entry.place(x = 80,
-                 y = 80) 
-move_label1 = ctk.CTkLabel(master = frame2,
-                     text = "mm",
-                     font = percent_font,
-                     text_color = f2_color1)
-move_label1.place(x = 230,
-                  y = 80)
-# ------- Move To Entry
 
 # ------- Move To Button 
-move_pos = ctk.CTkButton(master = frame2, 
-                    text = 'Move', 
-                    command = lambda: stage1.move_stage(move_entry),
+move_pos = ctk.CTkButton(master = tabs.tab('Axes'), 
+                    text = 'Move(mm)', 
+                    command = lambda: axis1.move_stage(move_entry),
                     font = percent_font,
                     text_color = f2_color1,
                     fg_color = "gray17",
                     border_color = f2_color2,
                     hover_color = f2_color3,
                     border_width = 2,
-                    width = 150)
-move_pos.place(x = 270,
-              y = 80)
+                    width = 140)
+move_pos.place(x = 200,
+               y = 5)
 # ------- Move To Button 
+
+# ------- Move To Entry
+move_entry = ctk.CTkEntry(master = tabs.tab('Axes'),
+                         text_color = f2_color1,
+                         font = percent_font,
+                         width = 140)
+move_entry.place(x = 200,
+                 y = 45) 
+# ------- Move To Entry
+
+# ------- Stage Connect & Disconnect Buttons
+stage_connect = ctk.CTkButton(master = tabs.tab('Axes'), 
+                    text = 'Connect', 
+                    command = lambda: axis1.connect_stage(),
+                    font = percent_font,
+                    text_color = f2_color1,
+                    fg_color = "gray17",
+                    border_color = f2_color2,
+                    hover_color = f2_color3,
+                    border_width = 2,
+                    width = 140,
+                    height = 50)
+stage_connect.place(x = 350,
+                    y = 60)
+
+stage_disconnect = ctk.CTkButton(master = tabs.tab('Axes'), 
+                    text = 'Disconnect', 
+                    command = lambda: axis1.disconnect_stage(),
+                    font = percent_font,
+                    text_color = f2_color1,
+                    fg_color = "gray17",
+                    border_color = f2_color2,
+                    hover_color = f2_color3,
+                    border_width = 2,
+                    width = 140,
+                    height = 50)
+stage_disconnect.place(x = 490,
+                       y = 60)
+ 
+stage_home = ctk.CTkButton(master = tabs.tab('Axes'), 
+                    text = 'Home Axis', 
+                    command = lambda: axis1.home_stage(),
+                    font = percent_font,
+                    text_color = f2_color1,
+                    fg_color = "gray17",
+                    border_color = f2_color2,
+                    hover_color = f2_color3,
+                    border_width = 2,
+                    width = 140,
+                    height = 50)
+stage_home.place(x = 490,
+                 y = 5)   
+
+all_axes_checkbox = ctk.CTkCheckBox(master = tabs.tab('Axes'),
+                                text = "All",
+                                font = percent_font,
+                                text_color = f2_color1,
+                                hover_color = f2_color3,
+                                border_color = f2_color2,
+                                fg_color = f2_color3,
+                                width = 40)
+all_axes_checkbox.place(x = 390,
+                   y = 15)
+# ------- Stage Connect, Home, & Disconnect Buttons
+
+# ------- Axis 1 Controls
+a1_position = ctk.StringVar()
+a1_homed = ctk.StringVar()
+a1_connected = ctk.StringVar()
+
+a1_select = ctk.CTkButton(master = tabs.tab('Axes'), 
+                              text = 'Axis 1', 
+                              font = percent_font,
+                              text_color = f2_color1,
+                              fg_color = "gray17",
+                              border_color = f2_color2,
+                              hover_color = f2_color3,
+                              border_width = 2,
+                              width = 170,
+                              height = 50)
+a1_select.place(x = 10,
+                    y = 120)
+
+a1_name_entry = ctk.CTkEntry(master = tabs.tab('Axes'),
+                         text_color = f2_color1,
+                         font = base_font,
+                         width = 170,
+                         placeholder_text = "Axis 1 Name")
+a1_name_entry.place(x = 10,
+                    y = 180) 
+
+a1_position_label = ctk.CTkLabel(master = tabs.tab('Axes'),
+                                 textvariable = a1_position,
+                                 font = percent_font,
+                                 text_color = f2_color1,
+                                 anchor = 'e',
+                                 width = 110)
+a1_position_label.place(x = 10,
+                        y = 210)
+
+a1_mm_label = ctk.CTkLabel(master = tabs.tab('Axes'),
+                           text = "mm",
+                           font = percent_font,
+                           text_color = f2_color1)
+a1_mm_label.place(x = 130,
+                  y = 210)
+
+a1_connected_label = ctk.CTkLabel(master = tabs.tab('Axes'),
+                                   text = "Connected: ",
+                                   font = base_font,
+                                   text_color = f2_color1)
+a1_connected_label.place(x = 10,
+                         y = 230)
+
+a1_cstatus_label = ctk.CTkLabel(master = tabs.tab('Axes'),
+                                   font = base_font,
+                                   text_color = f2_color1,
+                                   textvariable = a1_connected)
+a1_cstatus_label.place(x = 110,
+                         y = 230)
+
+a1_homed_label = ctk.CTkLabel(master = tabs.tab('Axes'),
+                              text = "Homed: ",
+                              font = base_font,
+                              text_color = f2_color1)
+a1_homed_label.place(x = 45,
+                     y = 250)
+
+a1_hstatus_label = ctk.CTkLabel(master = tabs.tab('Axes'),
+                                font = base_font,
+                                text_color = f2_color1,
+                                textvariable = a1_homed)
+a1_hstatus_label.place(x = 110,
+                       y = 250)
+
+# ------- Axis 1 Controls
 
 
 
 # -----------------------
 # ------- Control and Modify Axes (tab1)
 # -------------------------------------------
+
+
+
+
+# -------------------------------------------
+# ------- Spectrometer Settings & Control (tab2)
+# -----------------------
+
+t2_color1 = "#00C7E6"
+t2_color2 = "#068599"
+t2_color3 = "#133D44"
+
+
+
+all_spec_checkbox = ctk.CTkCheckBox(master = tabs.tab('Spectrometer'),
+                                    text = "All",
+                                    font = percent_font,
+                                    text_color = f2_color1,
+                                    hover_color = f2_color3,
+                                    border_color = f2_color2,
+                                    fg_color = f2_color3,
+                                    width = 40)
+all_spec_checkbox.place(x = 520,
+                        y = 15)
+
+
+spec_connect = ctk.CTkButton(master = tabs.tab('Spectrometer'), 
+                    text = 'Connect', 
+                    command = lambda: axis1.connect_stage(),
+                    font = percent_font,
+                    text_color = f2_color1,
+                    fg_color = "gray17",
+                    border_color = f2_color2,
+                    hover_color = f2_color3,
+                    border_width = 2,
+                    width = 140,
+                    height = 50)
+spec_connect.place(x = 490,
+                    y = 50)
+
+spec_disconnect = ctk.CTkButton(master = tabs.tab('Spectrometer'), 
+                    text = 'Disconnect', 
+                    command = lambda: axis1.connect_stage(),
+                    font = percent_font,
+                    text_color = f2_color1,
+                    fg_color = "gray17",
+                    border_color = f2_color2,
+                    hover_color = f2_color3,
+                    border_width = 2,
+                    width = 140,
+                    height = 50)
+spec_disconnect.place(x = 490,
+                    y = 110)
+
+
+
+
+s1_select = ctk.CTkButton(master = tabs.tab('Spectrometer'), 
+                              text = 'Spectrometer 1', 
+                              font = percent_font,
+                              text_color = t2_color1,
+                              fg_color = "gray17",
+                              border_color = t2_color2,
+                              hover_color = t2_color3,
+                              border_width = 2,
+                              width = 170,
+                              height = 50)
+s1_select.place(x = 10,
+                y = 5)
+
+s1_name_entry = ctk.CTkEntry(master = tabs.tab('Spectrometer'),
+                         text_color = t2_color1,
+                         font = base_font,
+                         width = 170,
+                         placeholder_text = "Spec. 1 Name")
+s1_name_entry.place(x = 10,
+                    y = 60)
+
+s1_temp_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
+                             text = 'Temp:',
+                                font = percent_font,
+                                text_color = f2_color1,)
+s1_temp_label.place(x = 220,
+                    y = 5)
+
+
+
+
+# -----------------------
+# ------- Spectrometer Settings & Control (tab2)
+# -------------------------------------------
+
 
 
 
@@ -578,7 +768,7 @@ stage_connection_status = ctk.CTkLabel(master = frame5,
                          #textvariable = stage_connect_string,
                          font = status_font,
                          text_color = f5_color1,
-                         textvariable = s1_connected)
+                         textvariable = a1_connected)
 stage_connection_status.place(x = 20,
                               y = 90)
 # ------- Stage Connection Status
@@ -596,7 +786,7 @@ stage_homed_status = ctk.CTkLabel(master = frame5,
                          #textvariable = stage_position_string,
                          font = status_font,
                          text_color = f5_color1,
-                         textvariable = s1_homed)
+                         textvariable = a1_homed)
 stage_homed_status.place(x = 20,
                          y = 150)
 # ------- Stage Homed Status
