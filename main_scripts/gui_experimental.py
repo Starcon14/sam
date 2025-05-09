@@ -24,6 +24,8 @@ Requirements:
 import customtkinter as ctk
 import tkinter as tk
 from tkinter import scrolledtext
+import sys
+import traceback
 
 import kcube_functions
 import acquisition as aq
@@ -54,7 +56,7 @@ def read_input():
 
 def on_close():
     # if tk.messagebox.askokcancel("Quit", "Shut down hardware and exit?"):
-    #     thread1 = stage1.disconnect_stage()
+    #     thread1 = axis1.disconnect_stage()
     #     thread1.join()
     #     window.destroy()
     #     print("Window Closed")
@@ -65,9 +67,18 @@ def convert():
     
     k=0
 
-
-
+# class txt_redirect():
+#     def __init__(self, term_out, tag = "stdout"):
+#         self.term_out = term_out
+#         self.tag = tag
+        
+#     def write(self, message):
+#         self.term_out.insert(tk.END, message, self.tag)
+#         self.term_out.see(tk.END)
     
+#     def flush(self):
+#         pass
+
     
 
 # -----------------------
@@ -88,6 +99,8 @@ window.geometry("1100x630")
 # ------ Font Definitions
 base_font = ctk.CTkFont(family="Courier New", 
                           size=14)
+base1_font = ctk.CTkFont(family="Courier New", 
+                          size=16)
 percent_font = ctk.CTkFont(family="Courier New", 
                           size=20)
 pos_font1 = ctk.CTkFont(family="Courier New", 
@@ -261,6 +274,10 @@ term_out.config(insertbackground = 'lime',
 term_out.pack(pady = 5, padx = 10)
 
 # ------- Terminal Window
+
+
+# sys.stdout = txt_redirect(term_out, "stdout")
+# sys.stderr = txt_redirect(term_out, "stderr")
 
 
 
@@ -529,6 +546,14 @@ t2_color1 = "#00C7E6"
 t2_color2 = "#068599"
 t2_color3 = "#133D44"
 
+s1_temp = ctk.StringVar()
+s1_wavelength = ctk.StringVar()
+s1_slit = ctk.StringVar()
+s1_exposure = ctk.StringVar()
+s1_temp.set('-70')
+s1_wavelength.set('450')
+s1_slit.set('10')
+s1_exposure.set("100")
 
 
 all_spec_checkbox = ctk.CTkCheckBox(master = tabs.tab('Spectrometer'),
@@ -596,12 +621,40 @@ s1_name_entry.place(x = 10,
                     y = 60)
 
 s1_temp_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
-                             text = 'Temp:',
-                                font = percent_font,
-                                text_color = f2_color1,)
+                             text = 'Temp(°C):',
+                             font = base1_font,
+                             text_color = f2_color1,)
 s1_temp_label.place(x = 220,
                     y = 5)
 
+s1_tstatus_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
+                                font = base1_font,
+                                text_color = f2_color1,
+                                textvariable = s1_temp)
+s1_tstatus_label.place(x = 310,
+                       y = 5)
+
+s1_temp_entry = ctk.CTkEntry(master = tabs.tab('Spectrometer'),
+                             text_color = t2_color1,
+                             font = base_font,
+                             width = 170,
+                             placeholder_text = "Set Temperature")
+s1_temp_entry.place(x = 220,
+                    y = 40)
+
+s1_wavelength_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
+                                   font = base1_font,
+                                   text_color = f2_color1,
+                                   text = "λ(nm):")
+s1_wavelength_label.place(x = 220,
+                          y = 80)
+
+s1_wstatus_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
+                                   font = base1_font,
+                                   text_color = f2_color1,
+                                   textvariable = s1_wavelength)
+s1_wstatus_label.place(x = 280,
+                       y = 80)
 
 
 
