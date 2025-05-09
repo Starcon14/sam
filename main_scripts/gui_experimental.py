@@ -67,17 +67,20 @@ def convert():
     
     k=0
 
-# class txt_redirect():
-#     def __init__(self, term_out, tag = "stdout"):
-#         self.term_out = term_out
-#         self.tag = tag
+class txt_redirect():
+    def __init__(self, term_out, tag = "stdout"):
+        self.term_out = term_out
+        self.tag = tag
         
-#     def write(self, message):
-#         self.term_out.insert(tk.END, message, self.tag)
-#         self.term_out.see(tk.END)
+    def write(self, message):
+        self.term_out.config(state = 'normal')
+        self.term_out.insert(tk.END, message, self.tag)
+        self.term_out.insert(tk.END,'\n')
+        self.term_out.see(tk.END)
+        self.term_out.config(state = 'disabled')
     
-#     def flush(self):
-#         pass
+    def flush(self):
+        pass
 
     
 
@@ -264,20 +267,20 @@ frame1.pack(pady = 5, padx = 10)
 
 # ------- Terminal Window
 term_out = scrolledtext.ScrolledText(master = frame1,
-                           wrap = 'word',
-                           background = 'gray15',
-                           foreground = 'lime',
-                           )
+                                     wrap = 'word',
+                                     background = 'gray15',
+                                     foreground = 'lime',
+                                     font = ("Courier New", 12),
+                                     height = 400)
 term_out.config(insertbackground = 'lime',
-                state = 'disabled'
-                )
+                state = 'disabled')
 term_out.pack(pady = 5, padx = 10)
 
 # ------- Terminal Window
 
 
-# sys.stdout = txt_redirect(term_out, "stdout")
-# sys.stderr = txt_redirect(term_out, "stderr")
+sys.stdout = txt_redirect(term_out, "stdout")
+sys.stderr = txt_redirect(term_out, "stderr")
 
 
 
@@ -305,8 +308,8 @@ tabs.pack(pady = 10, padx = 10)
 
 tabs.add('Axes')
 tabs.add('Spectrometer')
-tabs.add('Status')
 tabs.add('Settings')
+tabs.add('Status')
 tabs.add('Live View')
 
 
@@ -550,10 +553,10 @@ s1_temp = ctk.StringVar()
 s1_wavelength = ctk.StringVar()
 s1_slit = ctk.StringVar()
 s1_exposure = ctk.StringVar()
-s1_temp.set('-70')
+s1_temp.set('-70.456')
 s1_wavelength.set('450')
 s1_slit.set('10')
-s1_exposure.set("100")
+s1_exposure.set("1000000")
 
 
 all_spec_checkbox = ctk.CTkCheckBox(master = tabs.tab('Spectrometer'),
@@ -594,7 +597,20 @@ spec_disconnect = ctk.CTkButton(master = tabs.tab('Spectrometer'),
                     width = 140,
                     height = 50)
 spec_disconnect.place(x = 490,
-                    y = 110)
+                    y = 105)
+
+spec_input = ctk.CTkButton(master = tabs.tab('Spectrometer'), 
+                    text = 'Input',
+                    font = percent_font,
+                    text_color = f2_color1,
+                    fg_color = "gray17",
+                    border_color = f2_color2,
+                    hover_color = f2_color3,
+                    border_width = 2,
+                    width = 140,
+                    height = 80)
+spec_input.place(x = 490,
+                 y = 160)
 
 
 
@@ -625,37 +641,92 @@ s1_temp_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
                              font = base1_font,
                              text_color = f2_color1,)
 s1_temp_label.place(x = 220,
-                    y = 5)
+                    y = 0)
 
 s1_tstatus_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
                                 font = base1_font,
                                 text_color = f2_color1,
                                 textvariable = s1_temp)
 s1_tstatus_label.place(x = 310,
-                       y = 5)
+                       y = 0)
 
 s1_temp_entry = ctk.CTkEntry(master = tabs.tab('Spectrometer'),
                              text_color = t2_color1,
                              font = base_font,
-                             width = 170,
-                             placeholder_text = "Set Temperature")
-s1_temp_entry.place(x = 220,
-                    y = 40)
+                             width = 110,
+                             placeholder_text = "Set Temp",)
+s1_temp_entry.place(x = 360,
+                    y = 0)
 
 s1_wavelength_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
                                    font = base1_font,
                                    text_color = f2_color1,
                                    text = "λ(nm):")
 s1_wavelength_label.place(x = 220,
-                          y = 80)
+                          y = 40)
 
 s1_wstatus_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
                                    font = base1_font,
                                    text_color = f2_color1,
                                    textvariable = s1_wavelength)
 s1_wstatus_label.place(x = 280,
+                       y = 40)
+
+s1_wavelength_entry = ctk.CTkEntry(master = tabs.tab('Spectrometer'),
+                                   text_color = t2_color1,
+                                   font = base_font,
+                                   width = 110,
+                                   placeholder_text = "Set λ",)
+s1_wavelength_entry.place(x = 360,
+                          y = 40)
+
+
+
+s1_slit_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
+                                   font = base1_font,
+                                   text_color = f2_color1,
+                                   text = "Slit(µm):")
+s1_slit_label.place(x = 190,
+                    y = 80)
+
+s1_sstatus_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
+                                   font = base1_font,
+                                   text_color = f2_color1,
+                                   textvariable = s1_slit)
+s1_sstatus_label.place(x = 280,
                        y = 80)
 
+s1_slit_entry = ctk.CTkEntry(master = tabs.tab('Spectrometer'),
+                                   text_color = t2_color1,
+                                   font = base_font,
+                                   width = 110,
+                                   placeholder_text = "Set Slit",)
+s1_slit_entry.place(x = 360,
+                        y = 80)
+
+
+
+s1_exposure_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
+                                   font = base1_font,
+                                   text_color = f2_color1,
+                                   text = "Exposure(ms):")
+s1_exposure_label.place(x = 10,
+                          y = 120)
+
+s1_estatus_label = ctk.CTkLabel(master = tabs.tab('Spectrometer'),
+                                   font = base1_font,
+                                   text_color = f2_color1,
+                                   textvariable = s1_exposure)
+s1_estatus_label.place(x = 145,
+                       y = 120)
+
+s1_exposure_entry = ctk.CTkEntry(master = tabs.tab('Spectrometer'),
+                                   text_color = t2_color1,
+                                   font = base_font,
+                                   width = 180,
+                                   placeholder_text = "Set Exposure",)
+s1_exposure_entry.place(x = 230,
+                        y = 120)
 
 
 # -----------------------
@@ -674,85 +745,88 @@ s1_wstatus_label.place(x = 280,
 f3_color1 = "#B587D4"
 f3_color2 = "#70438E"
 f3_color3 = "#331249"
-frame3 = ctk.CTkFrame(master = tabs.tab("Settings"),
-                      width = 440,
-                      height = 150,
-                      border_width = 5,
-                      border_color = f3_color2)
-#frame3.pack_propagate(False)
-frame3.pack(pady = 10)
 
-# ------- Stepsize Label
-stepsize_label = ctk.CTkLabel(master = frame3,
-                         text = "Stepsize:",
-                         font = percent_font,
-                         text_color = f3_color1)
-stepsize_label.place(x = 20,
-                     y = 20)
-# ------- Stepsize Label
 
-# ------- Stepsize Entry
-stepsize_entry = ctk.CTkEntry(master = frame3,
-                         text_color = f3_color1,
-                         font = percent_font)
-stepsize_entry.place(x = 140,
-                     y = 20) 
-stepsize_label1 = ctk.CTkLabel(master = frame3,
-                     text = "mm",
-                     font = percent_font,
-                     text_color = f3_color1)
-stepsize_label1.place(x = 290,
-                      y = 20)
-# ------- Stepsize Entry
+
+# ------- Directory Button
+directory_button = ctk.CTkButton(master = tabs.tab("Settings"), 
+                    text = 'Browse Directory',
+                    font = percent_font,
+                    text_color = f3_color1,
+                    fg_color = "gray17",
+                    border_color = f3_color2,
+                    hover_color = f3_color3,
+                    border_width = 2,
+                    height = 40)
+directory_button.place(x = 10,
+                      y = 10)
+# ------- Directory Button
+
+# ------- Directory Entry
+directory_entry = ctk.CTkEntry(master = tabs.tab("Settings"),
+                               text_color = f3_color1,
+                               font = percent_font,
+                               width = 400,
+                               placeholder_text = "Select or Type Directory")
+directory_entry.place(x = 230,
+                      y = 15) 
+# ------- Directory Entry
+
 
 # ------- Start Label
-start_label = ctk.CTkLabel(master = frame3,
-                         text = "Start:",
+start_label = ctk.CTkLabel(master = tabs.tab("Settings"),
+                         text = "Start(mm):",
                          font = percent_font,
                          text_color = f3_color1)
-start_label.place(x = 20,
-                  y = 60)
+start_label.place(x = 490,
+                  y = 50)
 # ------- Start Label
 
 # ------- Start Entry
-start_entry = ctk.CTkEntry(master = frame3,
+start_entry = ctk.CTkEntry(master = tabs.tab("Settings"),
                          text_color = f3_color1,
                          font = percent_font)
-start_entry.place(x = 140,
-                     y = 60) 
-start_label1 = ctk.CTkLabel(master = frame3,
-                     text = "mm",
-                     font = percent_font,
-                     text_color = f3_color1)
-start_label1.place(x = 290,
-                      y = 60)
+start_entry.place(x = 490,
+                  y = 80) 
 # ------- Start Entry
 
 # ------- End Label
-end_label = ctk.CTkLabel(master = frame3,
-                         text = "End:",
+end_label = ctk.CTkLabel(master = tabs.tab("Settings"),
+                         text = "End(mm):",
                          font = percent_font,
                          text_color = f3_color1)
-end_label.place(x = 20,
-                y = 100)
+end_label.place(x = 490,
+                y = 110)
 # ------- End Label
 
 # ------- End Entry
-end_entry = ctk.CTkEntry(master = frame3,
+end_entry = ctk.CTkEntry(master = tabs.tab("Settings"),
                          text_color = f3_color1,
                          font = percent_font)
-end_entry.place(x = 140,
-                y = 100) 
-end_label1 = ctk.CTkLabel(master = frame3,
-                     text = "mm",
-                     font = percent_font,
-                     text_color = f3_color1)
-end_label1.place(x = 290,
-                 y = 100)
+end_entry.place(x = 490,
+                y = 140) 
 # ------- End Entry
+
+# ------- Stepsize Label
+stepsize_label = ctk.CTkLabel(master = tabs.tab("Settings"),
+                              text = "Stepsize(mm):",
+                              font = base1_font,
+                              text_color = f3_color1)
+stepsize_label.place(x = 490,
+                     y = 175)
+# ------- Stepsize Label
+
+# ------- Stepsize Entry
+stepsize_entry = ctk.CTkEntry(master = tabs.tab("Settings"),
+                              text_color = f3_color1,
+                              font = percent_font)
+stepsize_entry.place(x = 490,
+                     y = 200) 
+# ------- Stepsize Entry
+
 
 # ------- Input Parameters Button 
-input_paramters = ctk.CTkButton(master = frame3, 
+input_paramters = ctk.CTkButton(master = tabs.tab("Settings"), 
                     text = 'Input', 
                     command = lambda: read_input(),
                     font = percent_font,
@@ -761,13 +835,23 @@ input_paramters = ctk.CTkButton(master = frame3,
                     border_color = f3_color2,
                     hover_color = f3_color3,
                     border_width = 2,
-                    width = 80,
-                    height = 110)
-input_paramters.place(x = 340,
-                      y = 20)
+                    width = 140,
+                    height = 90)
+input_paramters.place(x = 490,
+                      y = 250)
 # ------- Input Parameters Button 
 
-
+# ------- Axis 1 Button
+input_paramters = ctk.CTkButton(master = tabs.tab("Settings"), 
+                    text = "Axis 1", 
+                    font = percent_font,
+                    text_color = f3_color1,
+                    fg_color = "gray17",
+                    border_color = f3_color2,
+                    hover_color = f3_color3,
+                    border_width = 2)
+input_paramters.place(x = 10,
+                      y = 80)
 
 
 # -----------------------
